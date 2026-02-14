@@ -1,32 +1,32 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google"; 
 import "modern-normalize/modern-normalize.css";
 import "./globals.css";
-import Providers from "../components/Providers";
+import TanStackProvider from "../components/TanStackProvider/TanStackProvider";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "NoteHub Next.js",
   description: "Manage your notes effectively",
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
-children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body>
-        <Providers>
-          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Header />
-            <main style={{ flex: 1 }}>
-              {children}
-            </main>
-            <Footer />
-          </div>
-        </Providers>
+      <body className={inter.className}>
+        <TanStackProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </TanStackProvider>
       </body>
     </html>
-  )
+  );
 }
