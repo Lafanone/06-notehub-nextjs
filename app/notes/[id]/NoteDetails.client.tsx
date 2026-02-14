@@ -2,35 +2,38 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { fetchNoteById } from '../../../lib/api';
-import css from './NoteDetails.module.css';
+import { fetchNoteById } from '@/lib/api';
+import styles from './NoteDetails.module.css';
 
-export default function NoteDetailsClient() {
-    const params = useParams();
-    const id = params?.id as string;
+export default function NoteDetails() {
+  const params = useParams();
+  const id = params?.id as string;
 
-    const { data: note, isLoading, isError } = useQuery({
-        queryKey: ['notes', id],
-        queryFn: () => fetchNoteById(id),
-        enabled: !!id,
-    });
-    if (isLoading) {
-        return <p>Loading, please wait...</p>
-    }
-    if (isError || !note) {
-        return <p>Something went wrong.</p>
-    }
+  const { data: note, isLoading, isError } = useQuery({
+    queryKey: ['notes', id],
+    queryFn: () => fetchNoteById(id),
+    refetchOnMount: false,
+  });
 
-    return (
-    <div className={css.container}>
-      <div className={css.item}>
-        <div className={css.header}>
-          <h2>{note.title}</h2>
-        </div>
-        <p className={css.tag}>{note.tag}</p>
-        <p className={css.content}>{note.content}</p>
-        <p className={css.date}>{new Date().toLocaleDateString()}</p>
+  if (isLoading) {
+    return <div className={styles.loading}>Loading, please wait...</div>;
+  }
+
+  if (isError) {
+    return <div className={styles.error}>Something went wrong.</div>;
+  }
+
+  if (!note) {
+    return null;
+  }
+
+  return (
+    <div className={styles.container}>
+      <h1 className={styles.title}>{note.title}</h1>
+      <div className={styles.meta}>
+        <span>{new Date(note.createdAt).toLocaleDateString()}</span> 
       </div>
+      <p className={styles.content}>{note.content}</p>
     </div>
   );
 }
